@@ -27,6 +27,7 @@ import ResumeTemplates from "./pages/ResumeTemplates";
 import StudentInterviews from "./pages/StudentInterviews";
 import AdminManagement from './pages/AdminManagement';
 import AdminPlaced from './pages/AdminPlacements';
+import StudentEnrollmentPage from "./pages/StudentEnrollmentPage";
 import NotFound from "./pages/NotFound";
 
 // Import your new ProtectedAdminRoute
@@ -34,6 +35,10 @@ import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import ProtectedStudentRoute from "./components/ProtectedStudentRoute";
 import BackButtonHandler from "./components/BackButtonHandler";
 import RootRedirector from "./components/RootRedirector";
+import StudentJoinAdminPage from "./pages/StudentJoinAdminPage";
+import CopyrightPolicy from "./pages/CopyrightPolicy";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsAndConditions from "./pages/TermsAndConditions";
 
 
 const queryClient = new QueryClient();
@@ -43,18 +48,25 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isStudentRoute = location.pathname.startsWith("/student");
+  const isJoinPage = location.pathname === "/join"; // NEW LINE
+  const isLoginPage = location.pathname === "/student_joins";
+  const isAdminLoginPage = location.pathname === "/admin/login";
+  // const isStudentJoinAdminPage = location.pathname === "/Admin/student_joins";
 
-  // Hide footer on admin and student pages
-  const hideFooter = isAdminRoute || isStudentRoute;
 
+  // Hide footer on admin, student, and join page
+  const hideFooter = isAdminRoute || isStudentRoute || isJoinPage || isLoginPage || isAdminLoginPage ;
+  const hideNavbar = location.pathname === "/student_joins"
+  // Always show navbar (no change needed)
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      {!hideNavbar && <Navbar />}
       <main className="flex-1">{children}</main>
       {!hideFooter && <Footer />}
     </div>
   );
 };
+
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -78,6 +90,12 @@ const App = () => (
               <Route path="/faq" element={<FAQ />} />
               <Route path="/login" element={<Login />} />
               <Route path="/DemoAdminLogin" element={<DemoAdminLogin/>} />
+              <Route path="/student_joins" element={<StudentEnrollmentPage />} />
+              {/* <Route path="/Admin/student_joins" element={<StudentJoinAdminPage />} /> */}
+              <Route path="/copyright-policy" element={<CopyrightPolicy />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />  
+              <Route path="/terms-of-service" element={<TermsAndConditions />} />
+
 
               {/* Admin routes (protected) */}
               <Route path="/admin/login" element={<AdminLogin />} />
@@ -178,6 +196,14 @@ const App = () => (
                 element={
                   <ProtectedAdminRoute>
                     <ResumeTemplates />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/student_joins"
+                element={
+                  <ProtectedAdminRoute>
+                    <StudentJoinAdminPage />
                   </ProtectedAdminRoute>
                 }
               />

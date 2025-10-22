@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
+import * as XLSX from 'xlsx';
 // import AppSkeleton from '@/components/AppSkeleton';
 import { supabase, supabaseNoSession } from '@/lib/supabase';
 
@@ -112,6 +113,45 @@ const StudentManagement: React.FC = () => {
       s.student_code.toLowerCase().includes(q)
     );
   }, [students, selectedBatch, searchTerm]);
+
+  // --- EXPORT TO EXCEL ---
+  const handleDownloadBatchExcel = () => {
+    if (!filteredStudents || filteredStudents.length === 0) {
+      toast({ title: 'No students', description: 'No students to download.', variant: 'destructive' });
+      return;
+    }
+
+    const dataToExport = filteredStudents.map(s => ({
+      StudentID: s.student_code,
+      Name: s.name,
+      Email: s.email,
+      Phone: s.phone ?? '',
+      Course: s.course,
+      EnrollmentDate: s.enrollment_date || '',
+      Status: s.status,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, selectedBatch || 'Batch');
+    const fileName = `students_${(selectedBatch || 'all').replace(/\s+/g, '_')}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  };
+
+  const handleDeleteStudent = async (studentId: string) => {
+    if (!confirm('Are you sure you want to delete this student? This action cannot be undone.')) return;
+    try {
+      setDeletingId(studentId);
+      const { error } = await supabase.from('students').delete().eq('id', studentId);
+      if (error) throw error;
+      toast({ title: 'Deleted', description: 'Student removed', variant: 'default' });
+      await loadStudents();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err?.message ?? 'Delete failed', variant: 'destructive' });
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   // --- DATA LOADER LOGIC ---
   const init = async () => {
@@ -353,7 +393,7 @@ const StudentManagement: React.FC = () => {
                 className="flex items-center space-x-2"
               >
                 <ArrowLeft className="h-4 w-4" />
-                <span>Back</span>
+                <span>Dashboard</span>
               </Button>
               <Users className="h-8 w-8 text-blue-600" />
               <div>
@@ -513,20 +553,29 @@ const StudentManagement: React.FC = () => {
               <Card><CardContent className="p-4"><div className="flex items-center justify-between"><div><p className="text-sm text-gray-600">Inactive Students</p><p className="text-2xl font-bold text-red-600">{getSelectedBatchStats().inactive}</p></div><Users className="h-8 w-8 text-red-600" /></div></CardContent></Card>
             </div>
 
-            {/* Search */}
-            <div className="mb-6">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search by name, email, or student code..."
-                  className="pl-10"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-            </div>
+          <div className="flex mb-6 items-center">
+  {/* Search bar takes full width, except button */}
+  <div className="relative flex-1">
+    <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+    <Input
+      placeholder="Search by name, email, or student code..."
+      className="pl-10 w-full"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  </div>
+  {/* Button floats right, margin-left */}
+  <Button
+    onClick={handleDownloadBatchExcel}
+    variant="outline"
+    className="ml-4"
+  >
+    Download Excel
+  </Button>
+</div>
 
-            {/* Table */}
+           
+
             <Card>
               <CardHeader>
                 <CardTitle>Students in {selectedBatch}</CardTitle>

@@ -8,7 +8,7 @@ import { Users, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 function generateAdminId(length = 8) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const chars = 'AZURERAJURSP';
   let code = '';
   for (let i = 0; i < length; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));

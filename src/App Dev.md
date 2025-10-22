@@ -75,8 +75,12 @@ gradlew.bat assembleDebug
 
 android/app/build/outputs/apk/debug/app-debug.apk
 
+keytool -genkey -v -keystore azureraju-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias azureraju
 
 <!-- You can now install it on your device. -->
 
 
+git add .
+git commit -m "updated changes"
+git push origin main --force
 

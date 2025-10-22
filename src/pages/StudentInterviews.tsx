@@ -23,7 +23,7 @@ import { useToast } from '@/hooks/use-toast';
 
 import { supabase } from '@/lib/supabase';
 
-import AppSkeleton from '@/components/AppSkeleton';
+// import AppSkeleton from '@/components/AppSkeleton';
 
 
 
@@ -387,9 +387,9 @@ const StudentInterviews: React.FC = () => {
 
 // ...
 
-if (!studentUser || interviews.length === 0) {
-  return <AppSkeleton variant="interviews" gridCount={6} />;
-}
+// if (!studentUser || interviews.length === 0) {
+//   return <AppSkeleton variant="interviews" gridCount={6} />;
+// }
 
 
 
@@ -430,7 +430,7 @@ if (!studentUser || interviews.length === 0) {
             <DialogTrigger asChild>
               <Button className="bg-purple-600 hover:bg-purple-700 flex items-center px-2 py-1 md:px-4 md:py-2 text-sm md:text-base">
                 <Plus className="h-4 w-4 mr-2" />
-                <span className="flex sm:hidden">Schedule</span>
+                {/* <span className="flex sm:hidden">Schedule</span> */}
                 <span className="hidden sm:flex">Schedule Interview</span>
               </Button>
             </DialogTrigger>

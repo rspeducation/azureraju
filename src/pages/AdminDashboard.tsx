@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
-import { studentService, batchService } from '../lib/supabaseService';
-import AppSkeleton from '@/components/AppSkeleton'; // <--- Skeleton loader
+import { studentService, batchService } from '../lib/supabaseService'; // Your custom service (optional)
+import { supabase } from '@/lib/supabase'; // For real placement count
+import AppSkeleton from '@/components/AppSkeleton'; // Skeleton loader
 
 const AdminDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -24,17 +25,26 @@ const AdminDashboard: React.FC = () => {
     const loadDashboardStats = async () => {
       try {
         setLoading(true);
+        // Get students and batches (optionally via your own services)
         const { data: students, error: studentsError } = await studentService.getAllStudents();
         if (studentsError) throw studentsError;
         const { data: batches, error: batchesError } = await batchService.getAllBatches();
         if (batchesError) throw batchesError;
-
         const totalStudents = students?.length || 0;
         const activeBatches = batches?.length || 0;
-        const placements = Math.floor(totalStudents * 0.4);
-        const successRate = totalStudents > 0 ? Math.round((placements / totalStudents) * 100) : 0;
 
-        setStats({ totalStudents, activeCourses: activeBatches, placements, successRate });
+        // Real placement count from Supabase
+        const { count: placementsCount, error: placementsError } = await supabase
+          .from("placements")
+          .select("*", { count: "exact", head: true });
+        if (placementsError) throw placementsError;
+
+        setStats({
+          totalStudents,
+          activeCourses: activeBatches,
+          placements: placementsCount ?? 0,
+          successRate: totalStudents > 0 ? Math.round(((placementsCount ?? 0) / totalStudents) * 100) : 0
+        });
       } catch (error: any) {
         console.error('Error loading dashboard stats:', error?.message || error);
         toast({ title: 'Error', description: 'Failed to load dashboard data', variant: 'destructive' });
@@ -54,7 +64,6 @@ const AdminDashboard: React.FC = () => {
     navigate('/admin/login');
   };
 
-  // --- SKELETON WHILE LOADING ---
   if (!user || loading) return <AppSkeleton variant="dashboard" gridCount={8} />;
 
   return (
@@ -77,7 +86,6 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-
 
       {/* STAT CARDS */}
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -130,6 +138,7 @@ const AdminDashboard: React.FC = () => {
             </CardContent>
           </Card>
         </div>
+
 
         {/* DASHBOARD SECTIONS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -249,20 +258,26 @@ const AdminDashboard: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Award className="h-5 w-5 text-purple-600" />
-                <span>Mock Interview </span>
+                <span>Students Joins </span>
               </CardTitle>
-              <CardDescription>Practice with AI-powered mock interviews</CardDescription>
+              <CardDescription>Students Joins form deatils Download in Excel</CardDescription>
             </CardHeader>
             <CardContent>
-               <Button
+              <Button className="w-full" variant="outline" onClick={() => navigate('/Admin/Student_joins')}>
+                View Joins
+              </Button>
+              
+            </CardContent>
+          </Card>
+
+
+           {/* <Button
                       className="w-full"
                       variant="outline"
                       onClick={() => window.open('https://interview-rsp-ai.netlify.app/', '_blank')}
                       >
                         Start Mock Interview
-                  </Button>
-            </CardContent>
-          </Card>
+                  </Button> */}
 
   
         </div>

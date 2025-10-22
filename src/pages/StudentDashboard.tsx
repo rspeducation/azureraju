@@ -29,6 +29,8 @@ const StudentDashboard: React.FC = () => {
   const [batchId, setBatchId] = useState<string | null>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(false);
 
+  
+
   // LOCALSTORAGE AUTH CHECK
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('studentAuth') === 'true';
