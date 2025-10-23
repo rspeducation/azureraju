@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Cloud, Phone, Mail, MapPin, Instagram, Linkedin, Youtube } from 'lucide-react';
@@ -21,13 +20,13 @@ const Footer = () => {
               Professional Azure Cloud Coaching Center helping 500+ students achieve their certification and career goals.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-blue-400">
+              <a href="#" className="text-gray-400 hover:text-blue-400" aria-label="Instagram">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400">
+              <a href="#" className="text-gray-400 hover:text-blue-400" aria-label="LinkedIn">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400">
+              <a href="#" className="text-gray-400 hover:text-blue-400" aria-label="YouTube">
                 <Youtube className="h-5 w-5" />
               </a>
             </div>
@@ -41,6 +40,9 @@ const Footer = () => {
               <li><Link to="/courses" className="text-gray-400 hover:text-white">Courses</Link></li>
               <li><Link to="/placements" className="text-gray-400 hover:text-white">Placements</Link></li>
               <li><Link to="/faq" className="text-gray-400 hover:text-white">FAQ</Link></li>
+              <li><Link to="/copyright-policy" className="text-gray-400 hover:text-white">Copyright Policy</Link></li>
+              <li><Link to="/privacy-policy" className="text-gray-400 hover:text-white">Privacy Policy</Link></li>
+              <li><Link to="/terms-of-service" className="text-gray-400 hover:text-white">Terms of Service</Link></li>
             </ul>
           </div>
 
@@ -69,7 +71,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-blue-400" />
-                <p className="text-sm text-gray-400">+91 7569790229</p>
+                <p className="text-sm text-gray-400">+91 8500086257</p>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-blue-400" />
@@ -79,9 +81,12 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-          <p className="text-gray-400 text-sm">
-            © 2025 AzureRaju. All rights reserved. | Developed by RSP Softweres
+        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+          <p>
+            © 2025 AzureRaju. All rights reserved. | Developed by{' '}
+            <a href="https://rspeducations.com" target="_blank" rel="noopener noreferrer" className="hover:text-white underline">
+              RSP Softweres
+            </a>
           </p>
         </div>
       </div>

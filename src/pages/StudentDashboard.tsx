@@ -221,11 +221,13 @@ if (!user || loadingProfile) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button
+
+               <Button
                 className="w-full"
                 variant="outline"
-                onClick={() => window.open('https://interview-rsp-ai.netlify.app/', '_blank')}
-              >
+                onClick={() => navigate('/rspai')}
+              > 
+        
                 Start Mock Interview
               </Button>
             </CardContent>
@@ -268,3 +270,11 @@ if (!user || loadingProfile) {
 
 
 export default StudentDashboard;
+
+{/* <Button
+                className="w-full"
+                variant="outline"
+                onClick={() => window.open('https://azureraju.com/rspai', '_blank')}
+              >
+                Start Mock Interview
+              </Button> */}

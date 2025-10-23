@@ -40,24 +40,56 @@ import CopyrightPolicy from "./pages/CopyrightPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 
+import Landing from "./pages/Interview/Landing";
+import Index from "./pages/Interview/Index";
+import NotFounds from "./pages/Interview/NotFound";
+import AzureNetworking from "./pages/Interview/AzureNetworking";
+import AzureIaaS from "./pages/Interview/AzureIaaS";
+import AzurePaaS from "./pages/Interview/AzurePaaS";
+import AzureSaaS from "./pages/Interview/AzureSaaS";
+import AzureDevOps from "./pages/Interview/AzureDevOps";
+import CompleteInterview from "./pages/Interview/CompleteInterview";
+
 
 const queryClient = new QueryClient();
 
-// 👇 Wrapper to control footer visibility
+// 👇 Wrapper to control footer & navbar visibility
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith("/admin");
-  const isStudentRoute = location.pathname.startsWith("/student");
-  const isJoinPage = location.pathname === "/join"; // NEW LINE
-  const isLoginPage = location.pathname === "/student_joins";
-  const isAdminLoginPage = location.pathname === "/admin/login";
-  // const isStudentJoinAdminPage = location.pathname === "/Admin/student_joins";
+  const path = location.pathname;
 
+  // Existing conditions
+  const isAdminRoute = path.startsWith("/admin");
+  const isStudentRoute = path.startsWith("/student");
+  const isJoinPage = path === "/join";
+  const isLoginPage = path === "/Enrollment_form";
+  const isAdminLoginPage = path === "/admin/login";
+  const isInterviewpage = path === "/interview";
 
-  // Hide footer on admin, student, and join page
-  const hideFooter = isAdminRoute || isStudentRoute || isJoinPage || isLoginPage || isAdminLoginPage ;
-  const hideNavbar = location.pathname === "/student_joins"
-  // Always show navbar (no change needed)
+  // 👇 NEW: Pages that should also hide Navbar/Footer
+  const isProtectedLearningPage =
+    [
+      "/rspai",
+      "/azure-networking",
+      "/azure-iaas",
+      "/azure-paas",
+      "/azure-saas",
+      "/azure-devops",
+      "/complete-interview",
+    ].includes(path);
+
+  // 👇 Hide footer and navbar for these pages
+  const hideFooter =
+    isAdminRoute ||
+    isStudentRoute ||
+    isJoinPage ||
+    isLoginPage ||
+    isAdminLoginPage ||
+    isProtectedLearningPage || isInterviewpage ;
+
+  const hideNavbar =
+    isLoginPage || isInterviewpage;
+
   return (
     <div className="min-h-screen flex flex-col">
       {!hideNavbar && <Navbar />}
@@ -90,11 +122,95 @@ const App = () => (
               <Route path="/faq" element={<FAQ />} />
               <Route path="/login" element={<Login />} />
               <Route path="/DemoAdminLogin" element={<DemoAdminLogin/>} />
-              <Route path="/student_joins" element={<StudentEnrollmentPage />} />
+              <Route path="/Enrollment_form" element={<StudentEnrollmentPage />} />
               {/* <Route path="/Admin/student_joins" element={<StudentJoinAdminPage />} /> */}
               <Route path="/copyright-policy" element={<CopyrightPolicy />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />  
               <Route path="/terms-of-service" element={<TermsAndConditions />} />
+
+
+                    <Route
+                      path="/rspai"
+                      element={
+                        <ProtectedStudentRoute>
+                          <Landing />
+                        </ProtectedStudentRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/interview"
+                      element={
+                        <ProtectedStudentRoute>
+                          <Index />
+                        </ProtectedStudentRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/azure-networking"
+                      element={
+                        <ProtectedStudentRoute>
+                          <AzureNetworking />
+                        </ProtectedStudentRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/azure-iaas"
+                      element={
+                        <ProtectedStudentRoute>
+                          <AzureIaaS />
+                        </ProtectedStudentRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/azure-paas"
+                      element={
+                        <ProtectedStudentRoute>
+                          <AzurePaaS />
+                        </ProtectedStudentRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/azure-saas"
+                      element={
+                        <ProtectedStudentRoute>
+                          <AzureSaaS />
+                        </ProtectedStudentRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/azure-devops"
+                      element={
+                        <ProtectedStudentRoute>
+                          <AzureDevOps />
+                        </ProtectedStudentRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/complete-interview"
+                      element={
+                        <ProtectedStudentRoute>
+                          <CompleteInterview />
+                        </ProtectedStudentRoute>
+                      }
+                    />
+
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route
+                      path=""
+                      element={
+                        <ProtectedStudentRoute>
+                          <NotFounds />
+                        </ProtectedStudentRoute>
+                      }
+                    />
+
 
 
               {/* Admin routes (protected) */}
